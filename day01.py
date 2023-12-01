@@ -17,6 +17,7 @@ DIGITS = [
     ('nine', 'n9e')
 ]
 
+
 class Day1(AdventDay):
 
     def __init__(self):
@@ -31,14 +32,9 @@ class Day1(AdventDay):
         return total
 
     def part_2(self):
-        total = 0
-        for line in self.read_lines():
-            for s, r in DIGITS:
-                line = re.sub(s, r, line)
-            digits = re.findall('\\d', line)
-            n = int(digits[0] + digits[-1])
-            total += n
-        return total
+        for s, r in DIGITS:
+            self.day_input = re.sub(s, r, self.day_input)
+        return self.part_1()
 
 
 if __name__ == '__main__':
