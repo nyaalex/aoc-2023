@@ -13,10 +13,10 @@ class Day{day}(AdventDay):
         super().__init__({year}, {day})
 
     def part_1(self):
-        pass
+        print(self.descriptions[0])
         
     def part_2(self):
-        pass
+        print(self.descriptions[1])
 
 
 if __name__ == '__main__':

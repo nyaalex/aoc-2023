@@ -4,6 +4,7 @@ import requests
 import os
 from pyfiglet import Figlet
 import re
+import textwrap
 
 
 class AdventDay:
@@ -29,6 +30,10 @@ class AdventDay:
         self.day_input = ''
         self.get_input()
 
+        # Get the description for the day
+        self.descriptions = []
+        self.get_description()
+
         # Define some useful constants
         self.v_neighbours = [
             (0, -1),
@@ -53,6 +58,39 @@ class AdventDay:
 
             with open(cache_pathname, 'x') as cache_file:
                 cache_file.write(self.day_input)
+
+    def parse_description(self, page):
+        questions = re.findall('<article.*?</article>', page, flags=re.DOTALL)
+        self.descriptions = []
+        for q in questions:
+            q = re.sub('</h2>', '\n', q)
+            q = re.sub('<.*?>', '', q)
+
+            r = ''
+            for line in q.split('\n'):
+                r += '\n'.join(textwrap.wrap(line))
+                r += '\n'
+
+            self.descriptions.append(r)
+
+        if len(self.descriptions) == 1:
+            self.descriptions.append('')
+
+    def get_description(self):
+        # check if its been downloaded to the cache
+        cache_pathname = os.path.join(self.dir_path, '.cache', '%s-%02d-description.html' % (self.year, self.day))
+        if os.path.exists(cache_pathname):
+            with open(cache_pathname) as cache_file:
+                description = cache_file.read()
+
+        else:
+            r = self.session.get(self.base_url)
+            description = r.text
+
+            with open(cache_pathname, 'x') as cache_file:
+                cache_file.write(description)
+
+        self.parse_description(description)
 
     def submit(self, submission, level):
         data = {
@@ -149,7 +187,7 @@ class AdventDay:
         if manhattan:
             return sum([abs(a_i - b_i) for a_i, b_i in zip(a, b)])
         else:
-            return math.sqrt(sum([(a_i - b_i)**2 for a_i, b_i in zip(a, b)]))
+            return math.sqrt(sum([(a_i - b_i) ** 2 for a_i, b_i in zip(a, b)]))
 
     @staticmethod
     def get_neighbours(coord, size, von_neumann=False, wrap=False):
@@ -160,7 +198,7 @@ class AdventDay:
         if von_neumann:
             n_hood = [(-1, 0), (0, -1), (1, 0), (0, 1)]
         else:
-            n_hood = [(i % 3 - 1, i//3 - 1) for i in range(9) if i != 4]
+            n_hood = [(i % 3 - 1, i // 3 - 1) for i in range(9) if i != 4]
 
         for dx, dy in n_hood:
             nx, ny = x + dx, y + dy
@@ -173,4 +211,3 @@ class AdventDay:
                     continue
 
             yield nx, ny
-
