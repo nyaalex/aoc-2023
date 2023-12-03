@@ -46,7 +46,7 @@ class AdventDay:
         self.m_neighbours = [(i // 3 - 1, i % 3 - 1) for i in range(9) if i != 4]
 
     def get_input(self):
-        # check if its been downloaded to the cache
+        # check if it has been downloaded to the cache
         cache_pathname = os.path.join(self.dir_path, '.cache', '%s-%02d-input.txt' % (self.year, self.day))
         if os.path.exists(cache_pathname):
             with open(cache_pathname) as cache_file:
@@ -64,6 +64,7 @@ class AdventDay:
         self.descriptions = []
         for q in questions:
             q = re.sub('</h2>', '\n', q)
+            q = re.sub('<li>', ' - ', q)
             q = re.sub('<.*?>', '', q)
 
             r = ''
@@ -77,7 +78,7 @@ class AdventDay:
             self.descriptions.append('')
 
     def get_description(self):
-        # check if its been downloaded to the cache
+        # check if it has been downloaded to the cache
         cache_pathname = os.path.join(self.dir_path, '.cache', '%s-%02d-description.html' % (self.year, self.day))
         if os.path.exists(cache_pathname):
             with open(cache_pathname) as cache_file:
@@ -143,7 +144,7 @@ class AdventDay:
     def read_lines(self, line_type=str):
         # Basic read lines function
         if line_type == bin:
-            line_type = lambda x: int(x, 2)
+            def line_type(x): int(x, 2)
 
         return [line_type(i) for i in self.day_input.split('\n') if i]
 

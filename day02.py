@@ -35,7 +35,6 @@ class Day2(AdventDay):
         total = 0
         for game in self.read_lines():
             game_id, rounds = game.split(': ')
-            game_id = int(game_id[5:])
             game_min = {'red': 0, 'green': 0, 'blue': 0}
 
             for game_round in rounds.split('; '):
