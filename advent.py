@@ -26,6 +26,9 @@ class AdventDay:
         c = self.session.cookies
         c.set('session', secret_cookie, domain='adventofcode.com')
 
+        # Set custom User-Agent, just to be polite :)
+        self.session.headers.update({'User-Agent': "github.com/nyaalex's AOC Bot"})
+
         # Now get the input as text
         self.day_input = ''
         self.get_input()
